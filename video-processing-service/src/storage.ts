@@ -5,9 +5,11 @@ import ffmpeg from 'fluent-ffmpeg';
 
 const storage = new Storage();
 
-const rawVideoBucketName = "neetcode-yt-raw-videos";
-const processedVideoBucketName = "neetcode-yt-processed-videos";
+// what people will upload videos to
+const rawVideoBucketName = "jk-yt-clone-raw-videos";
+const processedVideoBucketName = "jk-yt-clone-processed-videos";
 
+// make sure you delete files from local machine jake
 const localRawVideoPath = "./raw-videos";
 const localProcessedVideoPath = "./processed-videos";
 
@@ -26,9 +28,10 @@ export function setupDirectories() {
  * @returns A promise that resolves when the video has been converted.
  */
 export function convertVideo(rawVideoName: string, processedVideoName: string) {
+  // promise so we know from index.ts result of this process
   return new Promise<void>((resolve, reject) => {
     ffmpeg(`${localRawVideoPath}/${rawVideoName}`)
-      .outputOptions("-vf", "scale=-1:360") // 360p
+      .outputOptions("-vf", "scale=-1:360") // convert to 360p
       .on("end", function () {
         console.log("Processing finished successfully");
         resolve();
@@ -69,6 +72,7 @@ export async function uploadProcessedVideo(fileName: string) {
   const bucket = storage.bucket(processedVideoBucketName);
 
   // Upload video to the bucket
+  // DOUBLE CHECK THIS
   await storage.bucket(processedVideoBucketName)
     .upload(`${localProcessedVideoPath}/${fileName}`, {
       destination: fileName,
@@ -134,7 +138,8 @@ function deleteFile(filePath: string): Promise<void> {
  */
 function ensureDirectoryExistence(dirPath: string) {
   if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true }); // recursive: true enables creating nested directories
+    // recusrive so you can have nested directories
+    fs.mkdirSync(dirPath, { recursive: true }); 
     console.log(`Directory created at ${dirPath}`);
   }
 }
