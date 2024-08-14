@@ -1,18 +1,27 @@
 "use client"
 
 import { Fragment } from "react";
-
 import { signInWithGoogle, signOut } from "../utilities/firebase/firebase";
+import { User } from "firebase/auth";
 
-export default function SignIn() {
+interface SignInProps {
+    user: User | null
+}
+
+export default function SignIn({ user }: SignInProps) {
     return (
         <Fragment>
-            <button className="--sign-in-out-button" onClick={signOut}>
-                Sign Out
-            </button>
-            <button className="--sign-in-out-button" onClick={signInWithGoogle}>
-                Sign In
-            </button>
-        </Fragment>
+            {user ? 
+                (
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={signOut}>
+                        Sign Out
+                    </button>
+                ) : (
+                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full" onClick={signInWithGoogle}>
+                        Sign In
+                    </button>
+                )
+            }
+        </Fragment >
     )
 }
