@@ -8,7 +8,7 @@ setupDirectories();
 const app = express();
 app.use(express.json());
 
-// refactor this at some point and find the minor bugs
+// refactor this at some point
 app.post('/process-video', async(req, res) => {
   // Get the bucket and filename from Cloud Pub/Sub
   let data;
@@ -58,9 +58,9 @@ app.post('/process-video', async(req, res) => {
   // upload processed video to cloud storage
   await uploadProcessedVideo(outputFileName)
 
-  await setVideo(videoId, {
+  setVideo(videoId, {
     status: 'processed',
-    filename: 'outputFileName'
+    filename: outputFileName
   })
 
   await Promise.all([
